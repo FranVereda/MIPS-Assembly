@@ -1,0 +1,54 @@
+.data 
+	letras: .byte 'a', 'b', 'c', 'd', 'e', 'f'
+	nuevalinea: .asciiz "\n"
+	
+.text
+	
+	li $t0, 6		#tope $t0
+	
+	li $t6, 'c'		#$t6 a tiene 'b'
+	
+	la $s0, letras		#$s0 direccion de letras
+	
+	while: 
+		slt $s7, $zero, $t0		#$s7 se modifica si tope==0
+		bne $s7, 1, finw
+	loop:
+		lb $t1, ($s0) 		#t1 tiene el valor del arreglo
+		bne $t1, $t6, sumar		#compara si es a
+		j esA
+	finw:
+		li $t0, 4
+		la $s0, letras
+		j muestra
+	
+	sumar:	
+		addi $s0, $s0, 1
+		j while
+	esA: 
+		beqz $t0, while
+		lb $s4, ($s0)		#s4 aux = num de la pos del arreglo
+		la $s3, 0($s0)	#s3 dir del arreglo
+		addi $s3, $s3, 1	#s3 va a ser el siguiente del arreglo
+		lb $t5, ($s3)		#t5 siguiente numero
+		sb $t5, ($s0)
+		sub $t0, $t0, 1
+		addi $s0, $s0, 1
+		j esA
+	muestra: 
+		beqz $t0, fin
+		li $v0, 4
+		move $a0, $s0
+		syscall
+		addi $s0, $s0, 1
+		sub $t0, $t0, 1
+		j fin
+		
+	fin: 
+		li $v0, 10
+		syscall
+	
+	
+	
+	
+	
